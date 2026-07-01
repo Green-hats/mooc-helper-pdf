@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/.pnpm-store
 /.pnp
 .pnp.js
 
@@ -14,6 +15,16 @@
 
 # production
 /build
+
+# tauri build output
+/src-tauri/target
+/src-tauri/target-*
+
+# release artifacts
+*.exe
+*.dll
+*.dmg
+*.msi
 
 # misc
 .DS_Store

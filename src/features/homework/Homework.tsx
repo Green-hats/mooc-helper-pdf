@@ -45,9 +45,9 @@ export default function Homework({
               </Typography>
 
               <Typography
-                sx={{
-                  mt: 2,
-                }}
+                component="div"
+                data-answer="true"
+                sx={{ mt: 2 }}
               >
                 {subjectiveQ.judgeDtos.map((judgeDto) => (
                   <span

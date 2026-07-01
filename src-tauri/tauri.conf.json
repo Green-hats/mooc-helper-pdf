@@ -12,13 +12,24 @@
   },
   "tauri": {
     "allowlist": {
+      "dialog": {
+        "save": true
+      },
+      "fs": {
+        "writeFile": true,
+        "scope": ["**"]
+      },
+      "path": {
+        "all": true
+      },
       "http": {
         "request": true,
         "scope": ["https://www.icourse163.org/*"]
       },
       "shell": {
         "open": true,
-        "scope": []
+        "execute": true,
+        "scope": [{ "name": "open", "cmd": "open", "args": true }]
       }
     },
     "bundle": {

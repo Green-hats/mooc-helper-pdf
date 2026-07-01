@@ -25,6 +25,7 @@ import { styled } from "@mui/material/styles";
 import { ChapterTreeView } from "@/features/chapter-tree-view";
 import Homework from "@/features/homework";
 import Paper from "@/features/paper";
+import { ExportButton } from "@/features/export";
 import { courseList as getCourseList, homework, test } from "@/api";
 import { PAGE_SIZE } from "@/constants";
 import { openExternal } from "@/utils";
@@ -61,6 +62,14 @@ const Home: NextPage<{
   const selectedContent = useRecoilValue(selectedContentState);
 
   const paperRef = React.useRef<HTMLDivElement>(null);
+
+  const pdfTitle = selectedCourse && selectedContent
+    ? `${selectedCourse.name} - ${selectedContent.name}`
+    : "";
+
+  const hasQuestions =
+    mocPaperDto.objectiveQList.length > 0 ||
+    mocPaperDto.subjectiveQList.length > 0;
 
   const selectCourse = (course: Course) => {
     setSelectedCourse(course);
@@ -233,6 +242,9 @@ const Home: NextPage<{
               ref={paperRef}
               sx={{ flex: 1, height: "100%", overflow: "auto" }}
             >
+              {hasQuestions && (
+                <ExportButton title={pdfTitle} mocPaperDto={mocPaperDto} />
+              )}
               <Homework mocPaperDto={mocPaperDto} />
               <Paper mocPaperDto={mocPaperDto} />
             </Box>

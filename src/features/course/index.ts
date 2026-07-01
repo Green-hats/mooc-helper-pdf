@@ -20,6 +20,7 @@ export const selectedCourseState = atom<Course | null>({
 export const selectedContentState = atom<{
   type: "homework" | "quiz";
   contentId: number;
+  name: string;
 } | null>({
   key: "selectedContentState",
   default: null,

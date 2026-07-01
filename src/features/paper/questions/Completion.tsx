@@ -36,9 +36,9 @@ const Completion: React.FC<CompletionProps> = ({ question }) => {
         <HTML html={question.title} />
       </Typography>
       <Typography
-        sx={{
-          mt: 2,
-        }}
+        component="div"
+        data-answer="true"
+        sx={{ mt: 2 }}
       >
         <HTML html={question.stdAnswer.replace(/##%_YZPRLFH_%##/g, "或者")} />
       </Typography>

@@ -83,14 +83,15 @@ export default function ChapterTreeView() {
             >
               {chapter.homeworks?.map((homework) => (
                 <CustomTreeItem
-                  key={homework.contentId}
-                  nodeId={String(homework.contentId)}
+                  key={`hw-${homework.contentId}`}
+                  nodeId={`hw-${homework.contentId}`}
                   label={homework.name}
                   ContentProps={{
                     lastNestedChild: true,
                     onClick: () =>
                       setSelectedContent({
                         type: "homework",
+                        name: homework.name,
                         contentId: homework.contentId,
                       }),
                   }}
@@ -98,8 +99,8 @@ export default function ChapterTreeView() {
               ))}
               {chapter.quizs?.map((quiz) => (
                 <CustomTreeItem
-                  key={quiz.contentId}
-                  nodeId={String(quiz.contentId)}
+                  key={`qz-${quiz.contentId}`}
+                  nodeId={`qz-${quiz.contentId}`}
                   label={quiz.name}
                   ContentProps={{
                     lastNestedChild: true,
@@ -107,6 +108,7 @@ export default function ChapterTreeView() {
                       setSelectedContent({
                         type: "quiz",
                         contentId: quiz.contentId,
+                        name: quiz.name,
                       });
                     },
                   }}
@@ -114,8 +116,8 @@ export default function ChapterTreeView() {
               ))}
               {chapter.exam?.objectTestVo && (
                 <CustomTreeItem
-                  key={chapter.exam.objectTestVo.id}
-                  nodeId={String(chapter.exam.objectTestVo.id)}
+                  key={`exam-obj-${chapter.exam.objectTestVo.id}`}
+                  nodeId={`exam-obj-${chapter.exam.objectTestVo.id}`}
                   label={chapter.exam.objectTestVo.name}
                   ContentProps={{
                     lastNestedChild: true,
@@ -123,14 +125,15 @@ export default function ChapterTreeView() {
                       setSelectedContent({
                         type: "quiz",
                         contentId: chapter.exam.objectTestVo.id,
+                        name: chapter.exam.objectTestVo.name,
                       }),
                   }}
                 />
               )}
               {chapter.exam?.subjectTestVo && (
                 <CustomTreeItem
-                  key={chapter.exam.subjectTestVo.id}
-                  nodeId={String(chapter.exam.subjectTestVo.id)}
+                  key={`exam-sub-${chapter.exam.subjectTestVo.id}`}
+                  nodeId={`exam-sub-${chapter.exam.subjectTestVo.id}`}
                   label={chapter.exam.subjectTestVo.name}
                   ContentProps={{
                     lastNestedChild: true,
@@ -138,6 +141,7 @@ export default function ChapterTreeView() {
                       setSelectedContent({
                         type: "homework",
                         contentId: chapter.exam.subjectTestVo.id,
+                        name: chapter.exam.subjectTestVo.name,
                       }),
                   }}
                 />
