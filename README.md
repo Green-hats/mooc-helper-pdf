@@ -24,12 +24,14 @@
 
 ### 桌面端
 
-从 [Releases](https://github.com/whale4113/mooc-helper/releases) 下载：
+从 [Releases](https://github.com/Green-hats/mooc-helper-pdf/releases) 下载：
 
 | 平台 | 文件 |
 |------|------|
 | macOS | `mooc-helper_*.dmg` |
 | Windows | `mooc-helper-win.exe` + `WebView2Loader.dll` |
+
+> Windows 端构建包暂未在 Windows 设备上完整验证，实际运行效果以测试为准。
 
 ### 获取 mob-token
 
@@ -93,6 +95,12 @@ pnpm approve-builds
 - 题目和答案的排列顺序可能与实际存在差异
 - `pnpm export` 会提示 API routes 不会被静态导出，这是 Next.js 的正常提示；桌面端静态资源仍会写入 `out/`
 - 构建时可能出现 React Hook 依赖或 Browserslist 过期提示，目前不影响构建通过
+
+## 来源与维护
+
+本项目基于 [whale4113/mooc-helper](https://github.com/whale4113/mooc-helper) 修改而来，感谢原项目作者提供的基础功能与实现。
+
+当前 fork 由 [Green-hats](https://github.com/Green-hats) 维护，主要增加了 PDF 导出功能，并整理了桌面端构建与发布流程。
 
 ## 免责声明
 
