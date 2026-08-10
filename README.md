@@ -98,9 +98,9 @@ pnpm approve-builds
 
 ## 来源与维护
 
-本项目基于 [whale4113/mooc-helper](https://github.com/whale4113/mooc-helper) 修改而来，感谢原项目作者提供的基础功能与实现。
+本项目基于 [whale4113/mooc-helper](https://github.com/whale4113/mooc-helper) 修改而来，感谢原项目作者提供的基础功能与实现。原项目已停止维护。
 
-当前 fork 由 [Green-hats](https://github.com/Green-hats) 维护，主要增加了 PDF 导出功能，并整理了桌面端构建与发布流程。
+本项目由 [Green-hats](https://github.com/Green-hats) 独立维护，主要增加了 PDF 导出功能，并整理了桌面端构建与发布流程。
 
 ## 免责声明
 
