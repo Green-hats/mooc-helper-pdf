@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Development;
+Exec=mooc-helper
+StartupWMClass=mooc-helper
+Icon=mooc-helper
+Name=mooc-helper
+Terminal=false
+Type=Application

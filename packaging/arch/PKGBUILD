@@ -1,0 +1,57 @@
+# Maintainer: Green-hats
+# PKGBUILD for CI: builds the binary with makepkg inside the Arch container.
+# The build step compiles the app, package() installs it into the package layout.
+
+pkgname=mooc-helper
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Query answers for China University MOOC (mooc.icourse163.org) and export PDF revision materials"
+arch=('x86_64' 'aarch64')
+url="https://github.com/Green-hats/mooc-helper-pdf"
+license=('MIT')
+depends=(
+  'webkit2gtk-4.1'
+  'gtk3'
+  'libappindicator-gtk3'
+  'librsvg'
+  'patchelf'
+  'xdg-utils'
+)
+makedepends=(
+  'base-devel'
+  'git'
+  'rust'
+  'nodejs-lts'
+  'npm'
+  'pnpm'
+)
+source=()
+sha256sums=()
+
+build() {
+  # Source tree is placed directly in $srcdir by the CI workflow
+  cd "$srcdir"
+  pnpm install --frozen-lockfile --config.confirmModulesPurge=false
+  NEXT_PUBLIC_TAURI=1 pnpm tauri build --no-bundle
+}
+
+package() {
+  cd "$srcdir"
+
+  install -Dm755 "src-tauri/target/release/mooc-helper" \
+    "$pkgdir/usr/bin/mooc-helper"
+
+  install -Dm644 "$srcdir/packaging/arch/mooc-helper.desktop" \
+    "$pkgdir/usr/share/applications/mooc-helper.desktop"
+
+  for size in "32x32" "128x128" "256x256@2"; do
+    src=""
+    case "$size" in
+      32x32) src="src-tauri/icons/32x32.png" ;;
+      128x128) src="src-tauri/icons/128x128.png" ;;
+      256x256@2) src="src-tauri/icons/128x128@2x.png" ;;
+    esac
+    install -Dm644 "$src" \
+      "$pkgdir/usr/share/icons/hicolor/$size/apps/mooc-helper.png"
+  done
+}

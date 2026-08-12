@@ -124,30 +124,33 @@ jobs:
             npm \
             webkit2gtk-4.1 \
             gtk3 \
-            libayatana-appindicator \
+            libappindicator-gtk3 \
             librsvg \
             patchelf \
             xdg-utils \
             pnpm \
             ca-certificates
 
-      - name: Install Frontend Dependencies
-        run: pnpm install
+      - name: Get Version
+        id: version
+        run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
-      - name: Rust Cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: ./src-tauri
+      - name: Build Arch Package
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/pkgbuild/src"
+          cp packaging/arch/PKGBUILD "$GITHUB_WORKSPACE/pkgbuild/PKGBUILD"
+          rsync -a --exclude='.git' --exclude='target' --exclude='node_modules' --exclude='pkgbuild' \
+            "$GITHUB_WORKSPACE/" "$GITHUB_WORKSPACE/pkgbuild/src/"
+          cd "$GITHUB_WORKSPACE/pkgbuild"
+          makepkg -f --noconfirm
 
-      - name: Build & Upload Arch Bundle
-        uses: tauri-apps/tauri-action@v1
+      - name: Upload Arch Package
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          releaseId: ${{ needs.create-release.outputs.release_id }}
-          args: --bundles deb,rpm
+          tag_name: v${{ steps.version.outputs.PACKAGE_VERSION }}
+          files: pkgbuild/mooc-helper-*.pkg.tar.zst
 
   publish-release:
     name: Publish Release
