@@ -120,16 +120,28 @@ jobs:
             base-devel \
             git \
             rust \
-            nodejs-lts \
-            npm \
             webkit2gtk-4.1 \
             gtk3 \
             libappindicator-gtk3 \
             librsvg \
             patchelf \
             xdg-utils \
-            pnpm \
-            ca-certificates
+            ca-certificates \
+            sudo \
+            tar \
+            xz
+
+      - name: Install Node.js 20
+        run: |
+          curl -fsSL https://nodejs.org/dist/v20.20.2/node-v20.20.2-linux-x64.tar.xz \
+            -o /tmp/node.tar.xz
+          tar -xJf /tmp/node.tar.xz -C /opt
+          ln -sf /opt/node-v20.20.2-linux-x64/bin/node /usr/local/bin/node
+          ln -sf /opt/node-v20.20.2-linux-x64/bin/npm /usr/local/bin/npm
+          ln -sf /opt/node-v20.20.2-linux-x64/bin/npx /usr/local/bin/npx
+          npm i -g pnpm@10.4.0
+          node --version
+          pnpm --version
 
       - name: Get Version
         id: version
@@ -137,13 +149,19 @@ jobs:
 
       - name: Build Arch Package
         run: |
+          # makepkg refuses to run as root; create a build user
+          useradd -m builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+          chmod -R u+rwx "$GITHUB_WORKSPACE"
+
           mkdir -p "$GITHUB_WORKSPACE/pkgbuild/src"
           cp packaging/arch/PKGBUILD "$GITHUB_WORKSPACE/pkgbuild/PKGBUILD"
           tar --exclude='./pkgbuild' --exclude='./.git' --exclude='./target' \
             --exclude='./node_modules' --exclude='./out' --exclude='./.next' \
             -cf - . | tar -xf - -C "$GITHUB_WORKSPACE/pkgbuild/src"
-          cd "$GITHUB_WORKSPACE/pkgbuild"
-          makepkg -f --noconfirm
+          chown -R builder:builder "$GITHUB_WORKSPACE/pkgbuild"
+
+          su builder -c "cd '$GITHUB_WORKSPACE/pkgbuild' && makepkg -f"
 
       - name: Upload Arch Package
         uses: softprops/action-gh-release@v2
@@ -151,7 +169,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.version.outputs.PACKAGE_VERSION }}
-          files: pkgbuild/mooc-helper-*.pkg.tar.zst
+          files: ${{ github.workspace }}/pkgbuild/mooc-helper-*.pkg.tar.zst
 
   publish-release:
     name: Publish Release

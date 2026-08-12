@@ -21,9 +21,6 @@ makedepends=(
   'base-devel'
   'git'
   'rust'
-  'nodejs-lts'
-  'npm'
-  'pnpm'
 )
 source=()
 sha256sums=()
