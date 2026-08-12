@@ -149,7 +149,8 @@ jobs:
             ca-certificates \
             sudo \
             tar \
-            xz
+            xz \
+            perl
 
       - name: Install Node.js 20
         run: |
