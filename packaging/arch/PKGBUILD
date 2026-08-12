@@ -28,6 +28,8 @@ sha256sums=()
 build() {
   # Source tree is placed directly in $srcdir by the CI workflow
   cd "$srcdir"
+  # ring 0.17 fails to link with Arch's default lld; force GNU ld
+  export RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd"
   pnpm install --frozen-lockfile --config.confirmModulesPurge=false
   NEXT_PUBLIC_TAURI=1 pnpm tauri build --no-bundle
 }
