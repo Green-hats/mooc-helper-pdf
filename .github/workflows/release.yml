@@ -134,6 +134,11 @@ jobs:
       - name: Install Frontend Dependencies
         run: pnpm install
 
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri
+
       - name: Build & Upload Arch Bundle
         uses: tauri-apps/tauri-action@v1
         env:
@@ -142,7 +147,7 @@ jobs:
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
           releaseId: ${{ needs.create-release.outputs.release_id }}
-          retryAttempts: 3
+          args: --bundles deb,rpm
 
   publish-release:
     name: Publish Release
