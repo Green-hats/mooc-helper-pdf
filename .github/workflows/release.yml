@@ -14,7 +14,7 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     outputs:
-      release_id: ${{ steps.create-release.outputs.result }}
+      release_id: ${{ steps.create-release.outputs.release_id }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -35,16 +35,36 @@ jobs:
           PACKAGE_VERSION: ${{ steps.version.outputs.PACKAGE_VERSION }}
         with:
           script: |
-            const { data } = await github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: `v${process.env.PACKAGE_VERSION}`,
-              name: `mooc-helper v${process.env.PACKAGE_VERSION}`,
-              body: 'See the assets to download this version and install.',
-              draft: true,
-              prerelease: false
-            })
-            return data.id
+            const tag = `v${process.env.PACKAGE_VERSION}`;
+            let data;
+            try {
+              // Reuse the release if the tag already exists
+              ({ data } = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag,
+              }));
+              ({ data } = await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: data.id,
+                name: `mooc-helper v${process.env.PACKAGE_VERSION}`,
+                body: 'See the assets to download this version and install.',
+                draft: true,
+                prerelease: false,
+              }));
+            } catch {
+              ({ data } = await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: tag,
+                name: `mooc-helper v${process.env.PACKAGE_VERSION}`,
+                body: 'See the assets to download this version and install.',
+                draft: true,
+                prerelease: false,
+              }));
+            }
+            core.setOutput('release_id', data.id)
 
   build-tauri:
     name: Build ${{ matrix.platform }}
