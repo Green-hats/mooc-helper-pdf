@@ -28,6 +28,8 @@ sha256sums=()
 build() {
   # Source tree is placed directly in $srcdir by the CI workflow
   cd "$srcdir"
+  # ring 0.17.14 asm breaks with gcc 16; compile with clang
+  export CC=clang
   pnpm install --frozen-lockfile --config.confirmModulesPurge=false
   NEXT_PUBLIC_TAURI=1 pnpm tauri build --no-bundle
 }

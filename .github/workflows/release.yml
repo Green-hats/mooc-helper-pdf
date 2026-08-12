@@ -140,6 +140,7 @@ jobs:
             base-devel \
             git \
             rust \
+            clang \
             webkit2gtk-4.1 \
             gtk3 \
             libappindicator-gtk3 \
