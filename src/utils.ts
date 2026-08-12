@@ -1,4 +1,4 @@
-import { open } from "@tauri-apps/api/shell";
+import { open } from "@tauri-apps/plugin-shell";
 
 const openExternalWeb = (url: string) => window.open(url, "_blank");
 

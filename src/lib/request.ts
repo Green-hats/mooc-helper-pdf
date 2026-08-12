@@ -1,10 +1,14 @@
 import ky from "ky";
-import { getClient } from "@tauri-apps/api/http";
+import { fetch } from "@tauri-apps/plugin-http";
 import mapValues from "lodash/mapValues";
 import store from "./store";
-import type { HttpOptions } from "@tauri-apps/api/http";
 
-interface RequestOptions extends HttpOptions {
+interface RequestOptions {
+  url: string;
+  method?: string;
+  query?: Record<string, unknown>;
+  headers?: Record<string, string>;
+  body?: unknown;
   timeout?: number;
 }
 
@@ -32,7 +36,7 @@ async function requestWeb<T>(options: RequestOptions) {
 }
 
 async function requestTauri<T>(options: RequestOptions) {
-  const { url, query, ...other } = options;
+  const { url, query, body, timeout } = options;
 
   const mobToken = await store.get("mob-token");
 
@@ -44,17 +48,21 @@ async function requestTauri<T>(options: RequestOptions) {
     (value) => String(value)
   );
 
-  const client = await getClient();
-  const response = await client.request<T>({
-    url: `https://www.icourse163.org/${url}`,
+  const searchParams = new URLSearchParams(handledQuery).toString();
+  const baseUrl = `https://www.icourse163.org/${url}`;
+  const target = searchParams ? `${baseUrl}?${searchParams}` : baseUrl;
+
+  const response = await fetch(target, {
+    method: options.method ?? "GET",
     headers: {
+      ...options.headers,
       "edu-app-type": "android",
     },
-    query: handledQuery,
-    ...other,
+    body: body != null ? JSON.stringify(body) : undefined,
+    connectTimeout: timeout,
   });
 
-  return response.data;
+  return (await response.json()) as unknown as T;
 }
 
 const request = process.env.NEXT_PUBLIC_TAURI ? requestTauri : requestWeb;

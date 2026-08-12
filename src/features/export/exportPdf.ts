@@ -131,16 +131,16 @@ function printPdf(bodyHTML: string, title: string) {
 
 async function downloadPdf(bodyHTML: string, title: string) {
   const html = buildHtmlDocument(bodyHTML, title);
-  const { writeTextFile } = await import("@tauri-apps/api/fs");
-  const { appDir } = await import("@tauri-apps/api/path");
-  const { Command } = await import("@tauri-apps/api/shell");
+  const { writeTextFile } = await import("@tauri-apps/plugin-fs");
+  const { appDataDir } = await import("@tauri-apps/api/path");
+  const { Command } = await import("@tauri-apps/plugin-shell");
 
   const safeName = title.replace(/[\/\\:*?"<>|]/g, "_");
-  const dir = await appDir();
+  const dir = await appDataDir();
   const filePath = `${dir}${safeName}.html`;
   await writeTextFile(filePath, html);
 
-  const command = new Command("open", [filePath]);
+  const command = Command.create("open", [filePath]);
   await command.execute();
 }
 

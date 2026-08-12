@@ -80,10 +80,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libwebkit2gtk-4.0-dev \
+            libwebkit2gtk-4.1-dev \
             libappindicator3-dev \
             librsvg2-dev \
-            patchelf
+            patchelf \
+            xdg-utils
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -94,7 +95,46 @@ jobs:
         run: pnpm install
 
       - name: Build & Upload
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        with:
+          releaseId: ${{ needs.create-release.outputs.release_id }}
+          retryAttempts: 3
+
+  build-arch:
+    name: Build Arch
+    needs: create-release
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          pacman -Syu --noconfirm \
+            base-devel \
+            git \
+            rust \
+            nodejs-lts \
+            webkit2gtk-4.1 \
+            gtk3 \
+            libayatana-appindicator \
+            librsvg \
+            patchelf \
+            xdg-utils \
+            pnpm \
+            ca-certificates
+
+      - name: Install Frontend Dependencies
+        run: pnpm install
+
+      - name: Build & Upload Arch Bundle
+        uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
@@ -105,7 +145,7 @@ jobs:
 
   publish-release:
     name: Publish Release
-    needs: [create-release, build-tauri]
+    needs: [create-release, build-tauri, build-arch]
     runs-on: ubuntu-latest
     steps:
       - name: Publish Release
