@@ -139,12 +139,9 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE/pkgbuild/src"
           cp packaging/arch/PKGBUILD "$GITHUB_WORKSPACE/pkgbuild/PKGBUILD"
-          cp -a "$GITHUB_WORKSPACE/." "$GITHUB_WORKSPACE/pkgbuild/src/"
-          rm -rf "$GITHUB_WORKSPACE/pkgbuild/src/.git" \
-            "$GITHUB_WORKSPACE/pkgbuild/src/target" \
-            "$GITHUB_WORKSPACE/pkgbuild/src/node_modules" \
-            "$GITHUB_WORKSPACE/pkgbuild/src/pkgbuild" \
-            "$GITHUB_WORKSPACE/pkgbuild/src/out"
+          tar --exclude='./pkgbuild' --exclude='./.git' --exclude='./target' \
+            --exclude='./node_modules' --exclude='./out' --exclude='./.next' \
+            -cf - . | tar -xf - -C "$GITHUB_WORKSPACE/pkgbuild/src"
           cd "$GITHUB_WORKSPACE/pkgbuild"
           makepkg -f --noconfirm
 
