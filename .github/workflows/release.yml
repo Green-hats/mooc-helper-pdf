@@ -136,10 +136,9 @@ jobs:
           curl -fsSL https://nodejs.org/dist/v20.20.2/node-v20.20.2-linux-x64.tar.xz \
             -o /tmp/node.tar.xz
           tar -xJf /tmp/node.tar.xz -C /opt
-          ln -sf /opt/node-v20.20.2-linux-x64/bin/node /usr/local/bin/node
-          ln -sf /opt/node-v20.20.2-linux-x64/bin/npm /usr/local/bin/npm
-          ln -sf /opt/node-v20.20.2-linux-x64/bin/npx /usr/local/bin/npx
-          npm i -g pnpm@10.4.0
+          ln -sf /opt/node-v20.20.2-linux-x64/bin/* /usr/local/bin/
+          mkdir -p /usr/local/lib/node_modules
+          npm i -g --prefix /usr/local pnpm@10.4.0
           node --version
           pnpm --version
 
