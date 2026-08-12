@@ -3,7 +3,7 @@
 # The build step compiles the app, package() installs it into the package layout.
 
 pkgname=mooc-helper
-pkgver=0.2.2
+pkgver=0.2.3
 pkgrel=1
 pkgdesc="Query answers for China University MOOC (mooc.icourse163.org) and export PDF revision materials"
 arch=('x86_64' 'aarch64')
