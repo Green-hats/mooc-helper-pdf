@@ -27,7 +27,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "mooc-helper ${{ github.ref_name }}"
-          draft: true
+          releaseDraft: true
           prerelease: false
 
   build-tauri:
