@@ -6,6 +6,10 @@
   "permissions": [
     "core:default",
     "http:default",
+    {
+      "identifier": "http:default",
+      "allow": [{ "url": "https://www.icourse163.org/*" }]
+    },
     "shell:allow-open",
     "shell:allow-execute",
     "dialog:default",

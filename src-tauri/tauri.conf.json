@@ -63,20 +63,6 @@
     }
   },
   "plugins": {
-    "http": {
-      "allowlist": {
-        "request": {
-          "url": "https://www.icourse163.org/*",
-          "scope": ["https://www.icourse163.org/*"]
-        }
-      }
-    },
-    "shell": {
-      "open": true,
-      "scope": [
-        { "name": "open", "cmd": "open", "args": true }
-      ]
-    },
     "updater": {
       "endpoints": [
         "https://mooc-helper.vercel.app/api/update/{{target}}/{{current_version}}"
